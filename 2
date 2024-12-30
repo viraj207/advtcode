@@ -1,0 +1,60 @@
+def is_safe_report(report):
+    """
+    Determine if a report is safe based on the given rules.
+
+    A report is safe if:
+    1. The levels are either all increasing or all decreasing.
+    2. Any two adjacent levels differ by at least 1 and at most 3.
+
+    Args:
+        report (list of int): A list of levels in the report.
+
+    Returns:
+        bool: True if the report is safe, False otherwise.
+    """
+    differences = [report[i + 1] - report[i] for i in range(len(report) - 1)]
+
+    # Check if all differences are within the range [-3, -1] (decreasing) or [1, 3] (increasing)
+    all_increasing = all(1 <= diff <= 3 for diff in differences)
+    all_decreasing = all(-3 <= diff <= -1 for diff in differences)
+
+    return all_increasing or all_decreasing
+
+
+def count_safe_reports(data):
+    """
+    Count the number of safe reports in the given data.
+
+    Args:
+        data (list of str): A list of reports, where each report is a space-separated string of levels.
+
+    Returns:
+        int: The number of safe reports.
+    """
+    safe_count = 0
+
+    for line in data:
+        report = list(map(int, line.split()))
+        if is_safe_report(report):
+            safe_count += 1
+
+    return safe_count
+
+
+# Example input
+example_data = """7 6 4 2 1
+1 2 7 8 9
+9 7 6 2 1
+1 3 2 4 5
+8 6 4 4 1
+1 3 6 7 9""".strip().split("\n")
+
+# Calculate the number of safe reports
+safe_reports = count_safe_reports(example_data)
+print(f"Number of safe reports: {safe_reports}")
+
+# If you're analyzing a puzzle input from a file, you can use the following code:
+# with open("input.txt") as f:
+#     puzzle_data = f.read().strip().split("\n")
+# safe_reports = count_safe_reports(puzzle_data)
+# print(f"Number of safe reports: {safe_reports}")
