@@ -1,0 +1,54 @@
+import re
+
+def extract_and_sum_mul_instructions(memory):
+    """
+    Extract valid mul(X,Y) instructions from the corrupted memory and sum their results.
+    Handles enabling and disabling of mul instructions with do() and don't() instructions.
+
+    Args:
+        memory (str): The corrupted memory input as a single string.
+
+    Returns:
+        int: The sum of all valid mul instruction results.
+    """
+    # Regular expression to find valid mul instructions, do(), and don't()
+    mul_pattern = r"mul\((\d+),(\d+)\)"
+    control_pattern = r"(do\(\)|don't\(\))"
+
+    total_sum = 0
+    is_enabled = True  # Tracks whether mul instructions are enabled
+
+    # Split the memory by control and mul instructions
+    tokens = re.split(f"({control_pattern}|{mul_pattern})", memory)
+
+    for token in tokens:
+        if not token or token.isspace():
+            continue
+
+        # Handle control instructions
+        if token == "do()":
+            is_enabled = True
+        elif token == "don't()":
+            is_enabled = False
+
+        # Handle mul instructions if enabled
+        elif is_enabled:
+            match = re.match(mul_pattern, token)
+            if match:
+                x, y = map(int, match.groups())
+                total_sum += x * y
+
+    return total_sum
+
+# Example corrupted memory
+corrupted_memory = """do()xmul(2,4)%&mul[3,7]!@^don't()mul(5,5)+mul(32,64]then(do()mul(11,8)mul(8,5))"""
+
+# Calculate the sum of valid mul instruction results
+result = extract_and_sum_mul_instructions(corrupted_memory)
+print(f"The sum of all valid mul instruction results is: {result}")
+
+# If reading from a file, use the following code:
+# with open("input.txt") as f:
+#     corrupted_memory = f.read()
+# result = extract_and_sum_mul_instructions(corrupted_memory)
+# print(f"The sum of all valid mul instruction results is: {result}")
