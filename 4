@@ -1,0 +1,32 @@
+import re
+
+def extract_and_sum_mul_instructions(memory):
+    """
+    Extract valid mul(X,Y) instructions from the corrupted memory and sum their results.
+
+    Args:
+        memory (str): The corrupted memory input as a single string.
+
+    Returns:
+        int: The sum of all valid mul instruction results.
+    """
+    # Regular expression to find valid mul instructions
+    pattern = r"mul\((\d+),(\d+)\)"
+    
+    total_sum = 0
+
+    # Find all matches in the memory
+    matches = re.findall(pattern, memory)
+
+    for match in matches:
+        x, y = map(int, match)
+        total_sum += x * y
+
+    return total_sum
+
+# Example corrupted memory
+corrupted_memory = """xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))"""
+
+# Calculate the sum of valid mul instruction results
+result = extract_and_sum_mul_instructions(corrupted_memory)
+print(f"The sum of all valid mul instruction results is: {result}")
