@@ -1,0 +1,71 @@
+def count_word_in_word_search(word_search, word):
+    """
+    Count the occurrences of a word in a word search grid.
+
+    The word can be horizontal, vertical, diagonal, and written backwards.
+
+    Args:
+        word_search (list of str): The word search grid, where each string represents a row.
+        word (str): The word to find.
+
+    Returns:
+        int: The total number of occurrences of the word.
+    """
+    from itertools import product
+
+    def is_in_bounds(x, y):
+        return 0 <= x < rows and 0 <= y < cols
+
+    def count_word_from(x, y, dx, dy):
+        for i in range(len(word)):
+            nx, ny = x + i * dx, y + i * dy
+            if not is_in_bounds(nx, ny) or word[i] != word_search[nx][ny]:
+                return 0
+        return 1
+
+    directions = [
+        (0, 1),   # Right
+        (1, 0),   # Down
+        (1, 1),   # Diagonal down-right
+        (1, -1),  # Diagonal down-left
+        (0, -1),  # Left
+        (-1, 0),  # Up
+        (-1, -1), # Diagonal up-left
+        (-1, 1)   # Diagonal up-right
+    ]
+
+    rows, cols = len(word_search), len(word_search[0])
+    count = 0
+
+    for x, y in product(range(rows), range(cols)):
+        for dx, dy in directions:
+            count += count_word_from(x, y, dx, dy)
+
+    return count
+
+# Example word search
+grid = [
+    "MMMSXXMASM",
+    "MSAMXMSMSA",
+    "AMXSXMAAMM",
+    "MSAMASMSMX",
+    "XMASAMXAMM",
+    "XXAMMXXAMA",
+    "SMSMSASXSS",
+    "SAXAMASAAA",
+    "MAMMMXMMMM",
+    "MXMXAXMASX",
+]
+
+# Word to search
+word = "XMAS"
+
+# Count the occurrences
+occurrences = count_word_in_word_search(grid, word)
+print(f"The word '{word}' appears {occurrences} times in the word search.")
+
+# If reading from a file, use the following code:
+# with open("word_search.txt") as f:
+#     grid = f.read().strip().split("\n")
+# occurrences = count_word_in_word_search(grid, word)
+# print(f"The word '{word}' appears {occurrences} times in the word search.")
